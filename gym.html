@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iron Forge Gym</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .font-heading { font-family: 'Bebas Neue', cursive; }
+    .font-body { font-family: 'Barlow', sans-serif; }
+    .hero-bg {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,59,48,0.03) 40px,
+        rgba(255,59,48,0.03) 80px
+      );
+      animation: drift 20s linear infinite;
+    }
+    @keyframes drift {
+      from { transform: translate(0,0); }
+      to { transform: translate(80px, 80px); }
+    }
+    .glow-line {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ff3b30, transparent);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(255,59,48,0.15);
+    }
+    .stagger-1 { animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation: fadeUp 0.6s ease forwards; animation-delay: 0.25s; opacity: 0; }
+    .stagger-3 { animation: fadeUp 0.6s ease forwards; animation-delay: 0.4s; opacity: 0; }
+    .stagger-4 { animation: fadeUp 0.6s ease forwards; animation-delay: 0.55s; opacity: 0; }
+    .stagger-5 { animation: fadeUp 0.6s ease forwards; animation-delay: 0.7s; opacity: 0; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stat-counter { transition: color 0.3s ease; }
+    .stat-counter:hover { color: #ff3b30 !important; }
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: #ff3b30;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+    .pricing-popular {
+      border: 2px solid #ff3b30;
+      position: relative;
+    }
+    .pricing-popular::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: #ff3b30;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 16px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full font-body" style="background:#0a0a0a; color:#e8e8e8;">
+  <div id="app-wrapper" class="w-full h-full overflow-auto"><!-- Navigation -->
+   <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="main-nav" style="background:rgba(10,10,10,0.9); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,59,48,0.1);">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+     <div class="flex items-center gap-2">
+      <div style="background:#ff3b30;" class="w-8 h-8 rounded flex items-center justify-center"><i data-lucide="dumbbell" style="width:18px;height:18px;color:#0a0a0a;"></i>
+      </div><span class="font-heading text-2xl tracking-wider" style="color:#e8e8e8;">IRON FORGE</span>
+     </div>
+     <div class="hidden md:flex items-center gap-8"><a href="#classes" class="nav-link text-sm font-semibold tracking-wide" style="color:#a0a0a0;">CLASSES</a> <a href="#pricing" class="nav-link text-sm font-semibold tracking-wide" style="color:#a0a0a0;">PRICING</a> <a href="#trainers" class="nav-link text-sm font-semibold tracking-wide" style="color:#a0a0a0;">TRAINERS</a> <a href="#contact" class="nav-link text-sm font-semibold tracking-wide" style="color:#a0a0a0;">CONTACT</a> <button id="nav-cta" class="font-semibold text-sm px-5 py-2 rounded transition-all duration-300 hover:scale-105" style="background:#ff3b30;color:#ffffff;">JOIN NOW</button>
+     </div><button class="md:hidden" id="mobile-menu-btn" style="color:#e8e8e8;"> <i data-lucide="menu" style="width:24px;height:24px;"></i> </button>
+    </div><!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 flex flex-col gap-3"><a href="#classes" class="text-sm font-semibold tracking-wide py-2" style="color:#a0a0a0;">CLASSES</a> <a href="#pricing" class="text-sm font-semibold tracking-wide py-2" style="color:#a0a0a0;">PRICING</a> <a href="#trainers" class="text-sm font-semibold tracking-wide py-2" style="color:#a0a0a0;">TRAINERS</a> <a href="#contact" class="text-sm font-semibold tracking-wide py-2" style="color:#a0a0a0;">CONTACT</a> <button class="font-semibold text-sm px-5 py-2 rounded w-full" style="background:#ff3b30;color:#ffffff;">JOIN NOW</button>
+    </div>
+   </nav><!-- Hero Section -->
+   <section class="hero-bg w-full relative" style="padding-top:120px; padding-bottom:80px;">
+    <div class="relative z-10 max-w-6xl mx-auto px-6">
+     <div class="max-w-3xl">
+      <div class="stagger-1 flex items-center gap-3 mb-6">
+       <div class="glow-line w-12"></div><span class="text-xs font-bold tracking-widest" style="color:#ff3b30;">PREMIUM FITNESS CENTER</span>
+      </div>
+      <h1 id="hero-title" class="stagger-2 font-heading leading-none mb-6" style="font-size:clamp(3rem, 8vw, 6rem); color:#e8e8e8;">FORGE YOUR<br>
+       STRONGEST SELF</h1>
+      <p id="hero-subtitle" class="stagger-3 text-lg md:text-xl mb-10 max-w-lg leading-relaxed" style="color:#a0a0a0;">World-class equipment, elite trainers, and a community that pushes you beyond your limits.</p>
+      <div class="stagger-4 flex flex-wrap gap-4"><button id="hero-cta" class="font-bold text-base px-8 py-4 rounded transition-all duration-300 hover:scale-105 flex items-center gap-2" style="background:#ff3b30;color:#ffffff;"> <span>START FREE TRIAL</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i> </button> <button class="font-semibold text-base px-8 py-4 rounded transition-all duration-300 hover:scale-105 border" style="border-color:rgba(255,59,48,0.3);color:#e8e8e8;background:transparent;"> TAKE A TOUR </button>
+      </div>
+     </div><!-- Stats -->
+     <div class="stagger-5 mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="text-center p-4">
+       <div class="font-heading text-4xl md:text-5xl stat-counter" style="color:#e8e8e8;">
+        500+
+       </div>
+       <div class="text-xs font-semibold tracking-wider mt-1" style="color:#a0a0a0;">
+        ACTIVE MEMBERS
+       </div>
+      </div>
+      <div class="text-center p-4">
+       <div class="font-heading text-4xl md:text-5xl stat-counter" style="color:#e8e8e8;">
+        15+
+       </div>
+       <div class="text-xs font-semibold tracking-wider mt-1" style="color:#a0a0a0;">
+        EXPERT TRAINERS
+       </div>
+      </div>
+      <div class="text-center p-4">
+       <div class="font-heading text-4xl md:text-5xl stat-counter" style="color:#e8e8e8;">
+        30+
+       </div>
+       <div class="text-xs font-semibold tracking-wider mt-1" style="color:#a0a0a0;">
+        WEEKLY CLASSES
+       </div>
+      </div>
+      <div class="text-center p-4">
+       <div class="font-heading text-4xl md:text-5xl stat-counter" style="color:#e8e8e8;">
+        24/7
+       </div>
+       <div class="text-xs font-semibold tracking-wider mt-1" style="color:#a0a0a0;">
+        ALWAYS OPEN
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Classes Section -->
+   <section id="classes" class="w-full py-20" style="background:#111118;">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-14"><span class="text-xs font-bold tracking-widest" style="color:#ff3b30;">WHAT WE OFFER</span>
+      <h2 id="classes-heading" class="font-heading text-4xl md:text-5xl mt-3" style="color:#e8e8e8;">OUR CLASSES</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Class Cards -->
+      <div class="card-hover rounded-xl p-6 border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-5" style="background:rgba(255,59,48,0.1);"><i data-lucide="zap" style="width:26px;height:26px;color:#ff3b30;"></i>
+       </div>
+       <h3 class="font-heading text-2xl tracking-wide mb-2" style="color:#e8e8e8;">HIIT TRAINING</h3>
+       <p class="text-sm leading-relaxed mb-4" style="color:#a0a0a0;">High-intensity intervals that torch calories and build endurance in just 45 minutes.</p>
+       <div class="flex items-center gap-2 text-xs font-semibold" style="color:#ff3b30;"><i data-lucide="clock" style="width:14px;height:14px;"></i> <span>45 MIN • ALL LEVELS</span>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl p-6 border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-5" style="background:rgba(255,59,48,0.1);"><i data-lucide="dumbbell" style="width:26px;height:26px;color:#ff3b30;"></i>
+       </div>
+       <h3 class="font-heading text-2xl tracking-wide mb-2" style="color:#e8e8e8;">STRENGTH &amp; POWER</h3>
+       <p class="text-sm leading-relaxed mb-4" style="color:#a0a0a0;">Progressive overload programs designed to maximize muscle growth and raw strength.</p>
+       <div class="flex items-center gap-2 text-xs font-semibold" style="color:#ff3b30;"><i data-lucide="clock" style="width:14px;height:14px;"></i> <span>60 MIN • INTERMEDIATE</span>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl p-6 border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-5" style="background:rgba(255,59,48,0.1);"><i data-lucide="heart" style="width:26px;height:26px;color:#ff3b30;"></i>
+       </div>
+       <h3 class="font-heading text-2xl tracking-wide mb-2" style="color:#e8e8e8;">YOGA &amp; MOBILITY</h3>
+       <p class="text-sm leading-relaxed mb-4" style="color:#a0a0a0;">Restore balance with deep stretching, breathwork, and mindful movement sessions.</p>
+       <div class="flex items-center gap-2 text-xs font-semibold" style="color:#ff3b30;"><i data-lucide="clock" style="width:14px;height:14px;"></i> <span>50 MIN • ALL LEVELS</span>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl p-6 border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-5" style="background:rgba(255,59,48,0.1);"><i data-lucide="bike" style="width:26px;height:26px;color:#ff3b30;"></i>
+       </div>
+       <h3 class="font-heading text-2xl tracking-wide mb-2" style="color:#e8e8e8;">SPIN CYCLE</h3>
+       <p class="text-sm leading-relaxed mb-4" style="color:#a0a0a0;">Heart-pumping indoor cycling with immersive playlists and dynamic resistance changes.</p>
+       <div class="flex items-center gap-2 text-xs font-semibold" style="color:#ff3b30;"><i data-lucide="clock" style="width:14px;height:14px;"></i> <span>40 MIN • ALL LEVELS</span>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl p-6 border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-5" style="background:rgba(255,59,48,0.1);"><i data-lucide="swords" style="width:26px;height:26px;color:#ff3b30;"></i>
+       </div>
+       <h3 class="font-heading text-2xl tracking-wide mb-2" style="color:#e8e8e8;">BOXING</h3>
+       <p class="text-sm leading-relaxed mb-4" style="color:#a0a0a0;">Learn technique, build power, and relieve stress with guided boxing and bag work.</p>
+       <div class="flex items-center gap-2 text-xs font-semibold" style="color:#ff3b30;"><i data-lucide="clock" style="width:14px;height:14px;"></i> <span>55 MIN • BEGINNER+</span>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl p-6 border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="w-14 h-14 rounded-lg flex items-center justify-center mb-5" style="background:rgba(255,59,48,0.1);"><i data-lucide="flame" style="width:26px;height:26px;color:#ff3b30;"></i>
+       </div>
+       <h3 class="font-heading text-2xl tracking-wide mb-2" style="color:#e8e8e8;">CROSSFIT</h3>
+       <p class="text-sm leading-relaxed mb-4" style="color:#a0a0a0;">Functional fitness combining cardio, weightlifting, and gymnastics in varied WODs.</p>
+       <div class="flex items-center gap-2 text-xs font-semibold" style="color:#ff3b30;"><i data-lucide="clock" style="width:14px;height:14px;"></i> <span>60 MIN • ADVANCED</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Pricing Section -->
+   <section id="pricing" class="w-full py-20" style="background:#0a0a0a;">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-14"><span class="text-xs font-bold tracking-widest" style="color:#ff3b30;">INVEST IN YOURSELF</span>
+      <h2 id="pricing-heading" class="font-heading text-4xl md:text-5xl mt-3" style="color:#e8e8e8;">MEMBERSHIP PLANS</h2>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"><!-- Basic -->
+      <div class="card-hover rounded-xl p-8 border text-center" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <h3 class="font-heading text-2xl tracking-wider mb-1" style="color:#e8e8e8;">STARTER</h3>
+       <p class="text-xs mb-6" style="color:#a0a0a0;">Perfect for beginners</p>
+       <div class="font-heading text-5xl mb-1" style="color:#e8e8e8;">
+        $29
+       </div>
+       <div class="text-xs mb-8" style="color:#a0a0a0;">
+        /month
+       </div>
+       <ul class="text-left space-y-3 mb-8">
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Gym floor access</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Locker room</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>2 classes/week</li>
+       </ul><button class="w-full font-bold text-sm py-3 rounded transition-all duration-300 hover:scale-105 border" style="border-color:#ff3b30;color:#ff3b30;background:transparent;">CHOOSE PLAN</button>
+      </div><!-- Pro -->
+      <div class="card-hover pricing-popular rounded-xl p-8 text-center" style="background:#1a1a2e;">
+       <h3 class="font-heading text-2xl tracking-wider mb-1" style="color:#e8e8e8;">PRO</h3>
+       <p class="text-xs mb-6" style="color:#a0a0a0;">Best value for results</p>
+       <div class="font-heading text-5xl mb-1" style="color:#ff3b30;">
+        $59
+       </div>
+       <div class="text-xs mb-8" style="color:#a0a0a0;">
+        /month
+       </div>
+       <ul class="text-left space-y-3 mb-8">
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Full gym access</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Unlimited classes</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Sauna &amp; recovery</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>1 PT session/month</li>
+       </ul><button class="w-full font-bold text-sm py-3 rounded transition-all duration-300 hover:scale-105" style="background:#ff3b30;color:#ffffff;">CHOOSE PLAN</button>
+      </div><!-- Elite -->
+      <div class="card-hover rounded-xl p-8 border text-center" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <h3 class="font-heading text-2xl tracking-wider mb-1" style="color:#e8e8e8;">ELITE</h3>
+       <p class="text-xs mb-6" style="color:#a0a0a0;">For serious athletes</p>
+       <div class="font-heading text-5xl mb-1" style="color:#e8e8e8;">
+        $99
+       </div>
+       <div class="text-xs mb-8" style="color:#a0a0a0;">
+        /month
+       </div>
+       <ul class="text-left space-y-3 mb-8">
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Everything in Pro</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>4 PT sessions/month</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Nutrition coaching</li>
+        <li class="flex items-center gap-3 text-sm" style="color:#a0a0a0;"><i data-lucide="check" style="width:16px;height:16px;color:#ff3b30;flex-shrink:0;"></i>Priority booking</li>
+       </ul><button class="w-full font-bold text-sm py-3 rounded transition-all duration-300 hover:scale-105 border" style="border-color:#ff3b30;color:#ff3b30;background:transparent;">CHOOSE PLAN</button>
+      </div>
+     </div>
+    </div>
+   </section><!-- Trainers Section -->
+   <section id="trainers" class="w-full py-20" style="background:#111118;">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-14"><span class="text-xs font-bold tracking-widest" style="color:#ff3b30;">MEET THE TEAM</span>
+      <h2 class="font-heading text-4xl md:text-5xl mt-3" style="color:#e8e8e8;">ELITE TRAINERS</h2>
+     </div>
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="card-hover rounded-xl overflow-hidden border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="h-48 flex items-center justify-center" style="background:linear-gradient(135deg, #1a1a2e, #2a1a3e);">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center" style="background:rgba(255,59,48,0.15);">
+         <i data-lucide="user" style="width:40px;height:40px;color:#ff3b30;"></i>
+        </div>
+       </div>
+       <div class="p-5 text-center">
+        <h4 class="font-heading text-xl tracking-wide" style="color:#e8e8e8;">MARCUS COLE</h4>
+        <p class="text-xs font-semibold mt-1" style="color:#ff3b30;">STRENGTH COACH</p>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl overflow-hidden border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="h-48 flex items-center justify-center" style="background:linear-gradient(135deg, #1a1a2e, #1a2e2e);">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center" style="background:rgba(255,59,48,0.15);">
+         <i data-lucide="user" style="width:40px;height:40px;color:#ff3b30;"></i>
+        </div>
+       </div>
+       <div class="p-5 text-center">
+        <h4 class="font-heading text-xl tracking-wide" style="color:#e8e8e8;">SARAH PARK</h4>
+        <p class="text-xs font-semibold mt-1" style="color:#ff3b30;">HIIT SPECIALIST</p>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl overflow-hidden border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="h-48 flex items-center justify-center" style="background:linear-gradient(135deg, #1a1a2e, #2e2a1a);">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center" style="background:rgba(255,59,48,0.15);">
+         <i data-lucide="user" style="width:40px;height:40px;color:#ff3b30;"></i>
+        </div>
+       </div>
+       <div class="p-5 text-center">
+        <h4 class="font-heading text-xl tracking-wide" style="color:#e8e8e8;">ALEX RIVERA</h4>
+        <p class="text-xs font-semibold mt-1" style="color:#ff3b30;">YOGA INSTRUCTOR</p>
+       </div>
+      </div>
+      <div class="card-hover rounded-xl overflow-hidden border" style="background:#1a1a2e;border-color:rgba(255,255,255,0.05);">
+       <div class="h-48 flex items-center justify-center" style="background:linear-gradient(135deg, #1a1a2e, #2e1a1a);">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center" style="background:rgba(255,59,48,0.15);">
+         <i data-lucide="user" style="width:40px;height:40px;color:#ff3b30;"></i>
+        </div>
+       </div>
+       <div class="p-5 text-center">
+        <h4 class="font-heading text-xl tracking-wide" style="color:#e8e8e8;">DIANA CHEN</h4>
+        <p class="text-xs font-semibold mt-1" style="color:#ff3b30;">BOXING COACH</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact / CTA Section -->
+   <section id="contact" class="w-full py-20 relative" style="background:#0a0a0a;">
+    <div class="max-w-4xl mx-auto px-6 text-center"><span class="text-xs font-bold tracking-widest" style="color:#ff3b30;">READY TO BEGIN?</span>
+     <h2 class="font-heading text-4xl md:text-6xl mt-3 mb-6" style="color:#e8e8e8;">YOUR TRANSFORMATION<br>
+      STARTS TODAY</h2>
+     <p class="text-lg mb-10 max-w-lg mx-auto" style="color:#a0a0a0;">Join Iron Forge and get your first week completely free. No commitment, no pressure — just results.</p>
+     <form id="contact-form" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3"><input type="email" placeholder="Enter your email" required class="flex-1 px-5 py-4 rounded text-sm font-medium outline-none transition-all duration-300 focus:ring-2" style="background:#1a1a2e;color:#e8e8e8;border:1px solid rgba(255,255,255,0.1);--tw-ring-color:#ff3b30;"> <button type="submit" class="font-bold text-sm px-8 py-4 rounded transition-all duration-300 hover:scale-105 whitespace-nowrap" style="background:#ff3b30;color:#ffffff;">GET STARTED</button>
+     </form>
+     <div id="form-success" class="hidden mt-4 text-sm font-semibold" style="color:#ff3b30;">
+      <div class="flex items-center justify-center gap-2"><i data-lucide="check-circle" style="width:18px;height:18px;"></i> <span>Welcome aboard! We'll be in touch soon.</span>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="w-full py-10 border-t" style="background:#0a0a0a;border-color:rgba(255,255,255,0.05);">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+       <div style="background:#ff3b30;" class="w-7 h-7 rounded flex items-center justify-center"><i data-lucide="dumbbell" style="width:14px;height:14px;color:#0a0a0a;"></i>
+       </div><span class="font-heading text-lg tracking-wider" style="color:#e8e8e8;">IRON FORGE</span>
+      </div>
+      <p id="footer-text" class="text-xs" style="color:#a0a0a0;">© 2024 Iron Forge Gym. All rights reserved.</p>
+      <div class="flex items-center gap-4"><a href="#" class="transition-colors duration-300 hover:opacity-80" style="color:#a0a0a0;"><i data-lucide="instagram" style="width:18px;height:18px;"></i></a> <a href="#" class="transition-colors duration-300 hover:opacity-80" style="color:#a0a0a0;"><i data-lucide="twitter" style="width:18px;height:18px;"></i></a> <a href="#" class="transition-colors duration-300 hover:opacity-80" style="color:#a0a0a0;"><i data-lucide="facebook" style="width:18px;height:18px;"></i></a> <a href="#" class="transition-colors duration-300 hover:opacity-80" style="color:#a0a0a0;"><i data-lucide="youtube" style="width:18px;height:18px;"></i></a>
+      </div>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      hero_title: 'FORGE YOUR<br>STRONGEST SELF',
+      hero_subtitle: 'World-class equipment, elite trainers, and a community that pushes you beyond your limits.',
+      cta_text: 'START FREE TRIAL',
+      classes_heading: 'OUR CLASSES',
+      pricing_heading: 'MEMBERSHIP PLANS',
+      footer_text: '© 2024 Iron Forge Gym. All rights reserved.',
+      background_color: '#0a0a0a',
+      surface_color: '#1a1a2e',
+      text_color: '#e8e8e8',
+      accent_color: '#ff3b30',
+      muted_color: '#a0a0a0',
+      font_family: 'Barlow',
+      font_size: 16
+    };
+
+    // Element SDK initialization
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          const c = { ...defaultConfig, ...config };
+          const baseFontStack = 'Arial, sans-serif';
+          const customFont = c.font_family || defaultConfig.font_family;
+          const baseSize = c.font_size || defaultConfig.font_size;
+
+          // Apply text changes
+          document.getElementById('hero-title').innerHTML = c.hero_title;
+          document.getElementById('hero-subtitle').textContent = c.hero_subtitle;
+          document.getElementById('hero-cta').querySelector('span').textContent = c.cta_text;
+          document.getElementById('classes-heading').textContent = c.classes_heading;
+          document.getElementById('pricing-heading').textContent = c.pricing_heading;
+          document.getElementById('footer-text').textContent = c.footer_text;
+
+          // Apply colors
+          document.body.style.background = c.background_color;
+          document.body.style.color = c.text_color;
+
+          // Apply font
+          document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+
+          // Apply font size proportionally
+          document.querySelectorAll('p, li, span, input').forEach(el => {
+            if (!el.closest('.font-heading')) {
+              el.style.fontSize = `${baseSize * 0.875}px`;
+            }
+          });
+          document.querySelectorAll('h1').forEach(el => el.style.fontSize = `${baseSize * 3.5}px`);
+          document.querySelectorAll('h2').forEach(el => el.style.fontSize = `${baseSize * 3}px`);
+          document.querySelectorAll('h3').forEach(el => el.style.fontSize = `${baseSize * 1.5}px`);
+          document.querySelectorAll('h4').forEach(el => el.style.fontSize = `${baseSize * 1.25}px`);
+
+          // Apply accent color
+          document.querySelectorAll('[style*="color:#ff3b30"], [style*="background:#ff3b30"]').forEach(el => {
+            const s = el.getAttribute('style');
+            if (s.includes('color:#ff3b30') && !s.includes('background:#ff3b30')) {
+              el.style.color = c.accent_color;
+            }
+            if (s.includes('background:#ff3b30')) {
+              el.style.background = c.accent_color;
+            }
+          });
+
+          // Apply surface color
+          document.querySelectorAll('[style*="background:#1a1a2e"]').forEach(el => {
+            el.style.background = c.surface_color;
+          });
+
+          // Apply text color
+          document.querySelectorAll('[style*="color:#e8e8e8"]').forEach(el => {
+            el.style.color = c.text_color;
+          });
+
+          // Apply muted color
+          document.querySelectorAll('[style*="color:#a0a0a0"]').forEach(el => {
+            el.style.color = c.muted_color;
+          });
+        },
+        mapToCapabilities: (config) => {
+          const c = { ...defaultConfig, ...config };
+          return {
+            recolorables: [
+              { get: () => c.background_color || defaultConfig.background_color, set: (v) => { c.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+              { get: () => c.surface_color || defaultConfig.surface_color, set: (v) => { c.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+              { get: () => c.text_color || defaultConfig.text_color, set: (v) => { c.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+              { get: () => c.accent_color || defaultConfig.accent_color, set: (v) => { c.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
+              { get: () => c.muted_color || defaultConfig.muted_color, set: (v) => { c.muted_color = v; window.elementSdk.setConfig({ muted_color: v }); } }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => c.font_family || defaultConfig.font_family,
+              set: (v) => { c.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+            },
+            fontSizeable: {
+              get: () => c.font_size || defaultConfig.font_size,
+              set: (v) => { c.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+            }
+          };
+        },
+        mapToEditPanelValues: (config) => {
+          const c = { ...defaultConfig, ...config };
+          return new Map([
+            ['hero_title', c.hero_title],
+            ['hero_subtitle', c.hero_subtitle],
+            ['cta_text', c.cta_text],
+            ['classes_heading', c.classes_heading],
+            ['pricing_heading', c.pricing_heading],
+            ['footer_text', c.footer_text]
+          ]);
+        }
+      });
+    }
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    // Form submission
+    document.getElementById('contact-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('form-success').classList.remove('hidden');
+      e.target.reset();
+      setTimeout(() => {
+        document.getElementById('form-success').classList.add('hidden');
+      }, 4000);
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          document.getElementById('mobile-menu').classList.add('hidden');
+        }
+      });
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9de2f2140716ff7b',t:'MTc3MzgyMzM2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
